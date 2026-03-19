@@ -1,0 +1,162 @@
+============================================================
+COTI Skills — Gate 1: Structural Compliance
+Timestamp: 2026-03-19T18:30:54Z
+Skills dir: /Users/joshuamaddox/Documents/code/COTI/COTI Agents Skills Reseasrch/coti-skills
+============================================================
+
+--- S14: All 8 expected skill folders exist ---
+  Found: coti-account-setup
+  Found: coti-starter-grant
+  Found: coti-private-messaging
+  Found: coti-rewards-management
+  Found: coti-private-erc20
+  Found: coti-private-nft
+  Found: coti-smart-contracts
+  Found: coti-transaction-tools
+  ✅ PASS  S14: All 8 expected skill folders exist
+
+------------------------------------------------------------
+Skill: coti-account-setup
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-account-setup] Folder name is kebab-case
+  ✅ PASS  S2: [coti-account-setup] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-account-setup] No README.md inside skill folder
+  ✅ PASS  S4: [coti-account-setup] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-account-setup] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-account-setup] name field ('coti-account-setup') matches folder name
+  ✅ PASS  S7: [coti-account-setup] Description length (319 chars) is under 1024
+  ✅ PASS  S8: [coti-account-setup] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-account-setup] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-account-setup] name does not use reserved prefix
+  ✅ PASS  S11: [coti-account-setup] Body word count (733) is under 5,000
+  ✅ PASS  S12: [coti-account-setup] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-account-setup] metadata.mcp-server field present
+
+------------------------------------------------------------
+Skill: coti-starter-grant
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-starter-grant] Folder name is kebab-case
+  ✅ PASS  S2: [coti-starter-grant] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-starter-grant] No README.md inside skill folder
+  ✅ PASS  S4: [coti-starter-grant] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-starter-grant] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-starter-grant] name field ('coti-starter-grant') matches folder name
+  ✅ PASS  S7: [coti-starter-grant] Description length (260 chars) is under 1024
+  ✅ PASS  S8: [coti-starter-grant] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-starter-grant] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-starter-grant] name does not use reserved prefix
+  ✅ PASS  S11: [coti-starter-grant] Body word count (740) is under 5,000
+  ✅ PASS  S12: [coti-starter-grant] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-starter-grant] metadata.mcp-server field present
+
+------------------------------------------------------------
+Skill: coti-private-messaging
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-private-messaging] Folder name is kebab-case
+  ✅ PASS  S2: [coti-private-messaging] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-private-messaging] No README.md inside skill folder
+  ✅ PASS  S4: [coti-private-messaging] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-private-messaging] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-private-messaging] name field ('coti-private-messaging') matches folder name
+  ✅ PASS  S7: [coti-private-messaging] Description length (297 chars) is under 1024
+  ✅ PASS  S8: [coti-private-messaging] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-private-messaging] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-private-messaging] name does not use reserved prefix
+  ✅ PASS  S11: [coti-private-messaging] Body word count (914) is under 5,000
+  ✅ PASS  S12: [coti-private-messaging] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-private-messaging] metadata.mcp-server field present
+
+------------------------------------------------------------
+Skill: coti-rewards-management
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-rewards-management] Folder name is kebab-case
+  ✅ PASS  S2: [coti-rewards-management] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-rewards-management] No README.md inside skill folder
+  ✅ PASS  S4: [coti-rewards-management] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-rewards-management] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-rewards-management] name field ('coti-rewards-management') matches folder name
+  ✅ PASS  S7: [coti-rewards-management] Description length (273 chars) is under 1024
+  ✅ PASS  S8: [coti-rewards-management] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-rewards-management] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-rewards-management] name does not use reserved prefix
+  ✅ PASS  S11: [coti-rewards-management] Body word count (969) is under 5,000
+  ✅ PASS  S12: [coti-rewards-management] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-rewards-management] metadata.mcp-server field present
+
+------------------------------------------------------------
+Skill: coti-private-erc20
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-private-erc20] Folder name is kebab-case
+  ✅ PASS  S2: [coti-private-erc20] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-private-erc20] No README.md inside skill folder
+  ✅ PASS  S4: [coti-private-erc20] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-private-erc20] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-private-erc20] name field ('coti-private-erc20') matches folder name
+  ✅ PASS  S7: [coti-private-erc20] Description length (308 chars) is under 1024
+  ✅ PASS  S8: [coti-private-erc20] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-private-erc20] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-private-erc20] name does not use reserved prefix
+  ✅ PASS  S11: [coti-private-erc20] Body word count (1028) is under 5,000
+  ✅ PASS  S12: [coti-private-erc20] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-private-erc20] metadata.mcp-server field present
+
+------------------------------------------------------------
+Skill: coti-private-nft
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-private-nft] Folder name is kebab-case
+  ✅ PASS  S2: [coti-private-nft] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-private-nft] No README.md inside skill folder
+  ✅ PASS  S4: [coti-private-nft] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-private-nft] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-private-nft] name field ('coti-private-nft') matches folder name
+  ✅ PASS  S7: [coti-private-nft] Description length (273 chars) is under 1024
+  ✅ PASS  S8: [coti-private-nft] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-private-nft] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-private-nft] name does not use reserved prefix
+  ✅ PASS  S11: [coti-private-nft] Body word count (1087) is under 5,000
+  ✅ PASS  S12: [coti-private-nft] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-private-nft] metadata.mcp-server field present
+
+------------------------------------------------------------
+Skill: coti-smart-contracts
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-smart-contracts] Folder name is kebab-case
+  ✅ PASS  S2: [coti-smart-contracts] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-smart-contracts] No README.md inside skill folder
+  ✅ PASS  S4: [coti-smart-contracts] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-smart-contracts] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-smart-contracts] name field ('coti-smart-contracts') matches folder name
+  ✅ PASS  S7: [coti-smart-contracts] Description length (331 chars) is under 1024
+  ✅ PASS  S8: [coti-smart-contracts] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-smart-contracts] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-smart-contracts] name does not use reserved prefix
+  ✅ PASS  S11: [coti-smart-contracts] Body word count (1031) is under 5,000
+  ✅ PASS  S12: [coti-smart-contracts] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-smart-contracts] metadata.mcp-server field present
+
+------------------------------------------------------------
+Skill: coti-transaction-tools
+------------------------------------------------------------
+  ✅ PASS  S1: [coti-transaction-tools] Folder name is kebab-case
+  ✅ PASS  S2: [coti-transaction-tools] Contains exactly SKILL.md (correct casing)
+  ✅ PASS  S3: [coti-transaction-tools] No README.md inside skill folder
+  ✅ PASS  S4: [coti-transaction-tools] Frontmatter has 'name' field
+  ✅ PASS  S5: [coti-transaction-tools] Frontmatter has 'description' field
+  ✅ PASS  S6: [coti-transaction-tools] name field ('coti-transaction-tools') matches folder name
+  ✅ PASS  S7: [coti-transaction-tools] Description length (344 chars) is under 1024
+  ✅ PASS  S8: [coti-transaction-tools] Description has no XML angle brackets
+  ✅ PASS  S9: [coti-transaction-tools] Description contains 'Use when' trigger pattern
+  ✅ PASS  S10: [coti-transaction-tools] name does not use reserved prefix
+  ✅ PASS  S11: [coti-transaction-tools] Body word count (1004) is under 5,000
+  ✅ PASS  S12: [coti-transaction-tools] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
+  ✅ PASS  S13: [coti-transaction-tools] metadata.mcp-server field present
+
+============================================================
+GATE 1 RESULTS
+============================================================
+Total assertions: 105
+Passed:           105
+Failed:           0
+
+🟢 GATE 1: PASS — 105/105 structural assertions passed
+============================================================

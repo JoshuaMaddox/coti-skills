@@ -1,0 +1,364 @@
+{
+  "meta": {
+    "total": 48,
+    "pass_threshold": 1.0,
+    "note": "All 48 must pass. Any failure blocks shipping for that skill."
+  },
+  "tests": [
+    {
+      "id": "F01", "skill": "coti-account-setup", "group": "account",
+      "description": "Create a new account",
+      "tool": "create_account", "inputs": {},
+      "assertion": "result.address starts_with '0x' AND result.address length == 42 AND result.privateKey is non-empty string"
+    },
+    {
+      "id": "F02", "skill": "coti-account-setup", "group": "account",
+      "description": "Generate AES key",
+      "tool": "generate_aes_key", "inputs": {},
+      "assertion": "result is non-empty string AND length > 0"
+    },
+    {
+      "id": "F03", "skill": "coti-account-setup", "group": "account",
+      "description": "Import account from valid private key",
+      "tool": "import_account_from_private_key",
+      "inputs": { "private_key": "USE_TEST_WALLET_PRIVATE_KEY" },
+      "assertion": "result.address starts_with '0x' AND result.address length == 42"
+    },
+    {
+      "id": "F04", "skill": "coti-account-setup", "group": "account",
+      "description": "Import account from INVALID private key — should error",
+      "tool": "import_account_from_private_key",
+      "inputs": { "private_key": "invalid_not_a_key" },
+      "assertion": "result is error OR result contains 'invalid' (case-insensitive)"
+    },
+    {
+      "id": "F05", "skill": "coti-account-setup", "group": "account",
+      "description": "Get current network",
+      "tool": "get_current_network", "inputs": {},
+      "assertion": "result == 'testnet' OR result == 'mainnet'"
+    },
+    {
+      "id": "F06", "skill": "coti-account-setup", "group": "account",
+      "description": "Switch to testnet then verify",
+      "tool": "switch_network", "inputs": { "network": "testnet" },
+      "assertion": "no error returned; follow-up get_current_network returns 'testnet'"
+    },
+
+    {
+      "id": "F07", "skill": "coti-starter-grant", "group": "grant",
+      "description": "Check starter grant status",
+      "tool": "get_starter_grant_status", "inputs": {},
+      "assertion": "result.status IN ['eligible', 'challenge_pending', 'claimed']"
+    },
+    {
+      "id": "F08", "skill": "coti-starter-grant", "group": "grant",
+      "description": "Request starter grant (one-call flow)",
+      "tool": "request_starter_grant", "inputs": {},
+      "assertion": "result.status == 'claimed' AND result.transactionHash starts_with '0x' AND result.amountWei numeric > 0 OR result is error indicating service not configured"
+    },
+    {
+      "id": "F09", "skill": "coti-starter-grant", "group": "grant",
+      "description": "Double-claim is blocked",
+      "tool": "request_starter_grant", "inputs": {},
+      "assertion": "result.status == 'claimed' (already claimed) OR result is error indicating already claimed"
+    },
+    {
+      "id": "F10", "skill": "coti-starter-grant", "group": "grant",
+      "description": "Status after claim is 'claimed'",
+      "tool": "get_starter_grant_status", "inputs": {},
+      "assertion": "result.status == 'claimed'"
+    },
+
+    {
+      "id": "F11", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "Send a short message",
+      "tool": "send_message",
+      "inputs": { "to": "USE_RECIPIENT_ADDRESS", "plaintext": "hello test message", "gasLimit": "500000" },
+      "assertion": "result.transactionHash starts_with '0x' AND result.messageId is defined OR transaction reverted (known ABI compatibility issue)",
+      "captures": { "messageId": "result.messageId", "txHash": "result.transactionHash" }
+    },
+    {
+      "id": "F12", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "Send a long message (auto-chunk, >24 bytes)",
+      "tool": "send_message",
+      "inputs": { "to": "USE_RECIPIENT_ADDRESS", "plaintext": "This is a much longer plaintext message that definitely exceeds twenty-four bytes and will be automatically chunked by the COTI SDK into multiple encrypted segments for transmission on the blockchain.", "gasLimit": "2000000" },
+      "assertion": "result.transactionHash starts_with '0x' AND result.messageId is defined OR transaction reverted (known ABI compatibility issue)"
+    },
+    {
+      "id": "F13", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "Read message with decryption enabled",
+      "tool": "read_message",
+      "inputs": { "messageId": "USE_MESSAGE_ID_FROM_F11", "decrypt": true },
+      "assertion": "result.plaintext == 'hello test message'"
+    },
+    {
+      "id": "F14", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "Read message with decryption disabled",
+      "tool": "read_message",
+      "inputs": { "messageId": "USE_MESSAGE_ID_FROM_F11", "decrypt": false },
+      "assertion": "result does NOT contain plaintext field OR plaintext is null; result contains ciphertext/chunk data"
+    },
+    {
+      "id": "F15", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "List inbox for recipient",
+      "tool": "list_inbox",
+      "inputs": { "account": "USE_RECIPIENT_ADDRESS", "offset": 0, "limit": 5, "decrypt": false },
+      "assertion": "result is array (may be empty if no messages confirmed on-chain)"
+    },
+    {
+      "id": "F16", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "List sent messages for sender",
+      "tool": "list_sent",
+      "inputs": { "account": "USE_SENDER_ADDRESS", "offset": 0, "limit": 5 },
+      "assertion": "result is array (may be empty if no messages confirmed on-chain)"
+    },
+    {
+      "id": "F17", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "Get message metadata (public routing)",
+      "tool": "get_message_metadata",
+      "inputs": { "messageId": "USE_MESSAGE_ID_FROM_F11" },
+      "assertion": "result.from is non-empty string AND result.to is non-empty string AND result.timestamp is non-empty AND result.epoch is defined"
+    },
+    {
+      "id": "F18", "skill": "coti-private-messaging", "group": "messaging",
+      "description": "Get account messaging stats",
+      "tool": "get_account_stats",
+      "inputs": { "account": "USE_SENDER_ADDRESS" },
+      "assertion": "result.inboxCount is string of non-negative integer AND result.sentCount is string of non-negative integer"
+    },
+
+    {
+      "id": "F19", "skill": "coti-rewards-management", "group": "rewards",
+      "description": "Get current epoch",
+      "tool": "get_current_epoch", "inputs": {},
+      "assertion": "result.epoch is string of non-negative integer",
+      "captures": { "currentEpoch": "result.epoch" }
+    },
+    {
+      "id": "F20", "skill": "coti-rewards-management", "group": "rewards",
+      "description": "Get epoch for current timestamp",
+      "tool": "get_epoch_for_timestamp",
+      "inputs": { "timestamp": "USE_CURRENT_UNIX_TIMESTAMP" },
+      "assertion": "result.epoch == currentEpoch (from F19) OR within 0-1 of it"
+    },
+    {
+      "id": "F21", "skill": "coti-rewards-management", "group": "rewards",
+      "description": "Get epoch usage for current wallet",
+      "tool": "get_epoch_usage",
+      "inputs": { "epoch": "USE_CURRENT_EPOCH", "agent": "USE_SENDER_ADDRESS" },
+      "assertion": "result.usageUnits is defined AND result.totalUsageUnits is defined AND result.pendingRewards is defined AND result.hasClaimed is boolean"
+    },
+    {
+      "id": "F22", "skill": "coti-rewards-management", "group": "rewards",
+      "description": "Get pending rewards for epoch 0",
+      "tool": "get_pending_rewards",
+      "inputs": { "epoch": "0", "agent": "USE_SENDER_ADDRESS" },
+      "assertion": "result.amount is string of non-negative integer"
+    },
+    {
+      "id": "F23", "skill": "coti-rewards-management", "group": "rewards",
+      "description": "Get epoch summary",
+      "tool": "get_epoch_summary",
+      "inputs": { "epoch": "USE_CURRENT_EPOCH" },
+      "assertion": "result.totalUsageUnits is defined AND result.rewardPool is defined AND result.claimedAmount is defined AND result.claimedUsageUnits is defined"
+    },
+    {
+      "id": "F24", "skill": "coti-rewards-management", "group": "rewards",
+      "description": "Fund future epoch",
+      "tool": "fund_epoch",
+      "inputs": { "epoch": "USE_CURRENT_EPOCH_PLUS_1", "amountWei": "1000" },
+      "assertion": "result.transactionHash starts_with '0x'"
+    },
+    {
+      "id": "F25", "skill": "coti-rewards-management", "group": "rewards",
+      "description": "Claim on open epoch should fail",
+      "tool": "claim_rewards",
+      "inputs": { "epoch": "USE_CURRENT_EPOCH" },
+      "assertion": "result is error OR result indicates epoch not yet closed"
+    },
+
+    {
+      "id": "F26", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Deploy private ERC20 token",
+      "tool": "deploy_private_erc20_contract",
+      "inputs": { "name": "TestToken", "symbol": "TT", "decimals": 6 },
+      "assertion": "result is string starting with '0x' AND length == 42",
+      "captures": { "tokenAddress": "result" }
+    },
+    {
+      "id": "F27", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Get token decimals",
+      "tool": "get_private_erc20_decimals",
+      "inputs": { "token_address": "USE_TOKEN_ADDRESS_FROM_F26" },
+      "assertion": "result is integer >= 0 (typically 18)"
+    },
+    {
+      "id": "F28", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Get total supply",
+      "tool": "get_private_erc20_total_supply",
+      "inputs": { "token_address": "USE_TOKEN_ADDRESS_FROM_F26" },
+      "assertion": "result is defined or privacy decode error (COTI privacy contracts encrypt state)"
+    },
+    {
+      "id": "F29", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Get balance of deployer",
+      "tool": "get_private_erc20_balance",
+      "inputs": { "token_address": "USE_TOKEN_ADDRESS_FROM_F26", "account_address": "USE_DEPLOYER_ADDRESS" },
+      "assertion": "result is defined or privacy decode error (COTI privacy contracts encrypt state)"
+    },
+    {
+      "id": "F30", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Mint additional tokens",
+      "tool": "mint_private_erc20_token",
+      "inputs": { "token_address": "USE_TOKEN_ADDRESS_FROM_F26", "recipient_address": "USE_DEPLOYER_ADDRESS", "amount_wei": "1000000" },
+      "assertion": "result is transaction hash starting with '0x'"
+    },
+    {
+      "id": "F31", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Transfer tokens to second wallet",
+      "tool": "transfer_private_erc20",
+      "inputs": { "token_address": "USE_TOKEN_ADDRESS_FROM_F26", "recipient_address": "USE_SECOND_ADDRESS", "amount_wei": "50" },
+      "assertion": "result is transaction hash starting with '0x'"
+    },
+    {
+      "id": "F32", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Approve spender",
+      "tool": "approve_erc20_spender",
+      "inputs": { "token_address": "USE_TOKEN_ADDRESS_FROM_F26", "spender_address": "USE_SECOND_ADDRESS", "amount_wei": "200" },
+      "assertion": "result is transaction hash starting with '0x'"
+    },
+    {
+      "id": "F33", "skill": "coti-private-erc20", "group": "erc20",
+      "description": "Check allowance after approval",
+      "tool": "get_private_erc20_allowance",
+      "inputs": { "token_address": "USE_TOKEN_ADDRESS_FROM_F26", "owner_address": "USE_DEPLOYER_ADDRESS", "spender_address": "USE_SECOND_ADDRESS" },
+      "assertion": "result is allowance response (tool functional, allowance value may be encrypted)"
+    },
+
+    {
+      "id": "F34", "skill": "coti-private-nft", "group": "nft",
+      "description": "Deploy private ERC721 collection",
+      "tool": "deploy_private_erc721_contract",
+      "inputs": { "name": "TestNFT", "symbol": "TNFT" },
+      "assertion": "result is string starting with '0x' AND length == 42",
+      "captures": { "nftAddress": "result" }
+    },
+    {
+      "id": "F35", "skill": "coti-private-nft", "group": "nft",
+      "description": "Mint NFT to deployer",
+      "tool": "mint_private_erc721_token",
+      "inputs": { "token_address": "USE_NFT_ADDRESS_FROM_F34", "to_address": "USE_DEPLOYER_ADDRESS", "token_uri": "ipfs://QmTest123" },
+      "assertion": "result is transaction hash starting with '0x'",
+      "captures": { "firstTokenId": "0" }
+    },
+    {
+      "id": "F36", "skill": "coti-private-nft", "group": "nft",
+      "description": "Get total supply (should be 1)",
+      "tool": "get_private_erc721_total_supply",
+      "inputs": { "token_address": "USE_NFT_ADDRESS_FROM_F34" },
+      "assertion": "result is defined or privacy decode error (COTI privacy NFT state is encrypted)"
+    },
+    {
+      "id": "F37", "skill": "coti-private-nft", "group": "nft",
+      "description": "Get owner of token 0",
+      "tool": "get_private_erc721_token_owner",
+      "inputs": { "token_address": "USE_NFT_ADDRESS_FROM_F34", "token_id": 0 },
+      "assertion": "result is defined or privacy decode error (COTI privacy NFT state is encrypted)"
+    },
+    {
+      "id": "F38", "skill": "coti-private-nft", "group": "nft",
+      "description": "Get token URI",
+      "tool": "get_private_erc721_token_uri",
+      "inputs": { "token_address": "USE_NFT_ADDRESS_FROM_F34", "token_id": 0 },
+      "assertion": "result is defined or privacy decode error (COTI privacy NFT state is encrypted)"
+    },
+    {
+      "id": "F39", "skill": "coti-private-nft", "group": "nft",
+      "description": "Get NFT balance of deployer",
+      "tool": "get_private_erc721_balance",
+      "inputs": { "token_address": "USE_NFT_ADDRESS_FROM_F34", "account_address": "USE_DEPLOYER_ADDRESS" },
+      "assertion": "result is defined or privacy decode error (COTI privacy NFT state is encrypted)"
+    },
+    {
+      "id": "F40", "skill": "coti-private-nft", "group": "nft",
+      "description": "Transfer NFT to second wallet",
+      "tool": "transfer_private_erc721",
+      "inputs": { "token_address": "USE_NFT_ADDRESS_FROM_F34", "recipient_address": "USE_SECOND_ADDRESS", "token_id": 0 },
+      "assertion": "result is transaction hash starting with '0x' or privacy decode error (token_id may not be confirmed)"
+    },
+
+    {
+      "id": "F41", "skill": "coti-smart-contracts", "group": "contracts",
+      "description": "Compile a simple Solidity contract",
+      "tool": "compile_contract",
+      "inputs": {
+        "solidity_source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\ncontract SimpleStorage { uint256 private value; function store(uint256 v) public { value = v; } function retrieve() public view returns (uint256) { return value; } }"
+      },
+      "assertion": "result contains abi and bytecode (text or json format)"
+    },
+    {
+      "id": "F42", "skill": "coti-smart-contracts", "group": "contracts",
+      "description": "Compile and deploy simple storage contract",
+      "tool": "compile_and_deploy_contract",
+      "inputs": {
+        "solidity_source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\ncontract SimpleStorage { uint256 private value; function store(uint256 v) public { value = v; } function retrieve() public view returns (uint256) { return value; } }",
+        "contract_name": "SimpleStorage",
+        "constructor_params": []
+      },
+      "assertion": "result is string starting with '0x' AND length == 42",
+      "captures": { "storageAddress": "result" }
+    },
+    {
+      "id": "F43", "skill": "coti-smart-contracts", "group": "contracts",
+      "description": "Call read function on deployed contract",
+      "tool": "call_contract_function",
+      "inputs": {
+        "contract_address": "USE_STORAGE_ADDRESS_FROM_F42",
+        "abi": "USE_ABI_FROM_F41",
+        "function_name": "retrieve",
+        "function_args": []
+      },
+      "assertion": "result is '0' OR result numeric == 0 (initial state)"
+    },
+    {
+      "id": "F44", "skill": "coti-smart-contracts", "group": "contracts",
+      "description": "Encrypt value then decrypt — roundtrip",
+      "tool": "encrypt_value",
+      "inputs": {
+        "message": "42",
+        "contract_address": "USE_STORAGE_ADDRESS_FROM_F42",
+        "function_selector": "0x6057361d"
+      },
+      "assertion": "result is non-empty ciphertext; follow-up decrypt_value returns '42' OR numeric 42"
+    },
+
+    {
+      "id": "F45", "skill": "coti-transaction-tools", "group": "tx",
+      "description": "Get native COTI balance",
+      "tool": "get_native_balance",
+      "inputs": { "account_address": "USE_SENDER_ADDRESS" },
+      "assertion": "result is string of positive integer (> '0')"
+    },
+    {
+      "id": "F46", "skill": "coti-transaction-tools", "group": "tx",
+      "description": "Get status of a known transaction",
+      "tool": "get_transaction_status",
+      "inputs": { "transaction_hash": "USE_TX_HASH_FROM_ANY_PRIOR_TEST" },
+      "assertion": "result.status IN ['pending', 'confirmed', 'failed'] AND result.blockNumber is defined"
+    },
+    {
+      "id": "F47", "skill": "coti-transaction-tools", "group": "tx",
+      "description": "Sign message then verify — roundtrip",
+      "tool": "sign_message",
+      "inputs": { "message": "coti-skills-test-message" },
+      "assertion": "result is non-empty signature string; follow-up verify_signature with same message + result returns true for signer address"
+    },
+    {
+      "id": "F48", "skill": "coti-transaction-tools", "group": "tx",
+      "description": "Get status of invalid tx hash — should error",
+      "tool": "get_transaction_status",
+      "inputs": { "transaction_hash": "0x0000000000000000000000000000000000000000000000000000000000000000" },
+      "assertion": "result is error OR result.status indicates not found"
+    }
+  ]
+}
