@@ -4,6 +4,8 @@
 
 A complete, production-tested library of Claude Skills for interacting with the COTI privacy-preserving blockchain. Covers the full agent lifecycle: wallet creation, initial funding, encrypted messaging, token and NFT deployment, custom smart contracts, and transaction debugging.
 
+**New here? Start with the [Complete Setup Checklist for Non-Coders →](#complete-setup-checklist-for-non-coders)**
+
 ---
 
 ## What This Is
@@ -321,6 +323,272 @@ sequenceDiagram
     Agent->>Rewards: get_epoch_usage(epoch, address)
     Rewards-->>Agent: usageUnits, pendingRewards
 ```
+
+---
+
+## Complete Setup Checklist for Non-Coders
+
+This section walks you through everything — start to finish — so you can use these skills with Claude. No coding experience needed. Just follow each step in order.
+
+---
+
+### What you're setting up
+
+Think of it like this: Claude is a very smart assistant, but it needs a **phone line** to talk to the COTI blockchain. That phone line is called an **MCP server**. You need to install two of them on your computer, then tell Claude where they are. Once that's done, you load the skills and Claude knows exactly what to do.
+
+Here's the full picture:
+
+```
+Your computer
+├── coti-mcp server          ← handles wallets, tokens, contracts
+├── coti-agent-messaging     ← handles messages and rewards
+└── Claude (desktop app)
+    └── Skills loaded        ← these files tell Claude how to use the servers
+```
+
+---
+
+### Step 1 — Install Node.js (the engine that runs the servers)
+
+Node.js is a free program that lets your computer run the MCP servers. You only need to install it once.
+
+1. Go to **https://nodejs.org**
+2. Click the big green button that says **"LTS"** (that means the stable version)
+3. Download and run the installer — just click Next through everything
+4. When it's done, open **Terminal** (Mac) or **Command Prompt** (Windows)
+5. Type this and press Enter to check it worked:
+   ```
+   node --version
+   ```
+   You should see something like `v20.11.0`. Any number is fine.
+
+---
+
+### Step 2 — Install Git (for downloading the servers)
+
+Git lets you download code from the internet.
+
+1. Go to **https://git-scm.com/downloads**
+2. Download and install it for your operating system
+3. Check it worked — in Terminal/Command Prompt type:
+   ```
+   git --version
+   ```
+   You should see something like `git version 2.43.0`.
+
+---
+
+### Step 3 — Download and set up the coti-agent-messaging server
+
+This server handles private messages, rewards, and the starter grant.
+
+**3a. Download it:**
+```bash
+git clone https://github.com/coti-io/coti-agent-messaging.git
+cd coti-agent-messaging
+npm install
+npm run build
+```
+> What's happening: you're downloading the server code, then installing its parts (`npm install`), then building it so it's ready to run.
+
+**3b. Create a settings file:**
+
+Inside the `coti-agent-messaging` folder, create a file called `.env`. This is like a settings card that the server reads when it starts up.
+
+On Mac/Linux, run this in Terminal (still inside the `coti-agent-messaging` folder):
+```bash
+cp .env.example .env
+```
+If there's no `.env.example`, create the file yourself using any text editor (TextEdit on Mac, Notepad on Windows). Name it exactly `.env` (with the dot at the start) and put this inside:
+```
+PRIVATE_KEY=0x_your_private_key_here
+AES_KEY=your_aes_key_here
+CONTRACT_ADDRESS=0xc94189E22144500a66669E5bA1B42387DCc5Cd6a
+COTI_NETWORK=testnet
+```
+
+> You'll fill in `PRIVATE_KEY` and `AES_KEY` in Step 6 after you create your wallet. Leave them as placeholders for now. The `CONTRACT_ADDRESS` shown above is the official COTI testnet messaging contract — use it as-is.
+
+---
+
+### Step 4 — Download and set up the coti-mcp server
+
+This server handles wallets, tokens, NFTs, contracts, and transactions.
+
+**4a. Download it:**
+```bash
+cd ..
+git clone https://github.com/coti-io/coti-mcp.git
+cd coti-mcp
+npm install
+```
+
+**4b. Create the stdio wrapper file:**
+
+The coti-mcp server needs a small connector file to work with Claude. Create a file called `run-stdio.ts` inside the `coti-mcp` folder with this exact content:
+
+```typescript
+#!/usr/bin/env node
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import createServer from "./index.js";
+
+const server = createServer({ config: { debug: false } });
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
+
+> This file acts as a bridge so Claude can talk to the server. You only create it once.
+
+---
+
+### Step 5 — Connect the servers to Claude
+
+How you connect the servers depends on which Claude product you use.
+
+#### If you use Claude Desktop (the app on your computer)
+
+1. Open Claude Desktop
+2. Go to **Settings → Developer → Edit Config** (or find `claude_desktop_config.json` in your settings folder)
+3. Add both servers to the config like this:
+
+```json
+{
+  "mcpServers": {
+    "coti-mcp": {
+      "command": "npx",
+      "args": ["tsx", "/full/path/to/coti-mcp/run-stdio.ts"]
+    },
+    "coti-agent-messaging": {
+      "command": "node",
+      "args": ["/full/path/to/coti-agent-messaging/dist/mcp-server.js"]
+    }
+  }
+}
+```
+
+> Replace `/full/path/to/` with the actual folder path on your computer. On Mac it might look like `/Users/yourname/coti-mcp/run-stdio.ts`. On Windows it would be `C:\Users\yourname\coti-mcp\run-stdio.ts`.
+
+4. Save the file and restart Claude Desktop.
+
+#### If you use Claude.ai (in a browser)
+
+Claude.ai does not currently support MCP servers directly. Use the Claude Desktop app instead.
+
+#### If you use Claude Code (in a terminal)
+
+Run this in your project folder to register the servers:
+```bash
+claude mcp add coti-mcp -- npx tsx /full/path/to/coti-mcp/run-stdio.ts
+claude mcp add coti-agent-messaging -- node /full/path/to/coti-agent-messaging/dist/mcp-server.js
+```
+
+---
+
+### Step 6 — Load the skills into Claude
+
+The skills are the instruction folders in this repository. You need to tell Claude about them.
+
+#### In Claude Desktop:
+1. Go to **Settings → Capabilities → Skills**
+2. Click **Add skill folder**
+3. Select the `coti-account-setup` folder (from this repository)
+4. Repeat for whichever other skills you want
+
+**Recommended starting set:**
+- `coti-account-setup` — you need this one first, always
+- `coti-starter-grant` — to get your first COTI tokens
+- `coti-private-messaging` — to send encrypted messages
+- `coti-transaction-tools` — to check balances and transactions
+
+#### In Claude Code:
+Copy the skill folders to Claude's skills directory:
+```bash
+cp -r coti-account-setup ~/.claude/skills/
+cp -r coti-starter-grant ~/.claude/skills/
+cp -r coti-private-messaging ~/.claude/skills/
+cp -r coti-transaction-tools ~/.claude/skills/
+```
+
+---
+
+### Step 7 — Create your COTI wallet
+
+Now you're ready to create a blockchain wallet. A wallet is just a pair of keys — like a username and password — that proves you own your account on the blockchain.
+
+1. Open a new chat with Claude (make sure the MCP servers are connected — you'll see a plug icon or server indicator)
+2. Type: **"Create a new COTI wallet on testnet"**
+3. Claude will call the `create_account` tool and give you back:
+   - An **address** — like `0x6552...` — this is your public username on the blockchain
+   - A **private key** — like `0x00a4...` — this is your secret password. **Save it somewhere safe. Never share it.**
+
+4. Then type: **"Generate an AES key for my wallet"**
+5. Claude will give you an **AES key** — a string of letters and numbers. Save this too.
+
+**Now go back to your `.env` file** inside `coti-agent-messaging` and fill in the real values:
+```
+PRIVATE_KEY=0x_paste_your_real_private_key_here
+AES_KEY=paste_your_real_aes_key_here
+```
+Then restart the `coti-agent-messaging` server (stop it if it's running and start it again).
+
+---
+
+### Step 8 — Get your starter COTI tokens
+
+Your new wallet has zero tokens and can't do anything yet. You need a tiny amount of COTI to pay for transactions (called "gas"). The starter grant gives you some for free.
+
+1. In Claude, type: **"Claim my COTI starter grant"**
+2. Claude will handle the whole process and tell you when it's done
+3. Then type: **"Check my COTI balance"** to confirm you received some
+
+> If the starter grant isn't available (requires a running backend service), you can get testnet COTI from the COTI Discord faucet at **https://discord.com/invite/Z4r8D6ez49**
+
+---
+
+### Step 9 — You're ready
+
+Once your balance is above zero you can use any of the skills. Try these to get started:
+
+- **"Send a private message to [wallet address]"** → uses `coti-private-messaging`
+- **"Deploy a private token called MyToken with symbol MTK"** → uses `coti-private-erc20`
+- **"Check my rewards"** → uses `coti-rewards-management`
+
+---
+
+### Checklist summary
+
+| # | Step | Done? |
+|---|---|---|
+| 1 | Install Node.js from nodejs.org | ☐ |
+| 2 | Install Git from git-scm.com | ☐ |
+| 3 | Clone and build `coti-agent-messaging` | ☐ |
+| 4 | Create `.env` file inside `coti-agent-messaging` | ☐ |
+| 5 | Clone `coti-mcp` and create `run-stdio.ts` | ☐ |
+| 6 | Add both servers to Claude's config | ☐ |
+| 7 | Load skill folders into Claude | ☐ |
+| 8 | Ask Claude to create your wallet — save your keys | ☐ |
+| 9 | Update `.env` with your real keys, restart the server | ☐ |
+| 10 | Claim your starter grant or get testnet COTI from Discord | ☐ |
+| 11 | Check your balance — if it's above zero, you're all set | ☐ |
+
+---
+
+### Common problems
+
+**"MCP server not connected"**
+The server isn't running. Make sure the file paths in your Claude config are correct (full absolute paths, no shortcuts like `~`).
+
+**"AES key not configured"**
+Your `.env` file is missing the `AES_KEY` value. Go back to Step 7 and fill it in.
+
+**"Insufficient gas"**
+Your wallet balance is zero. Complete Step 8 to get your starter tokens.
+
+**"Could not decode result data"**
+This is normal for some token balance checks on COTI. The data is encrypted on-chain — it doesn't mean something is broken.
+
+**Server starts but Claude can't see the tools**
+Restart Claude completely after editing the config file.
 
 ---
 
