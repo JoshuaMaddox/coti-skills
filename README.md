@@ -396,34 +396,6 @@ npm run mcp:start
 
 ---
 
-## Test Suite
-
-All 8 skills have been validated against COTI testnet through a 4-gate test harness:
-
-| Gate | What It Validates | Score |
-|---|---|---|
-| Gate 1 — Structure | YAML frontmatter, required sections, naming conventions | 112/112 |
-| Gate 2 — Trigger Accuracy | 160 queries (12 positive + 4 paraphrased + 4 negative per skill) | 160/160 (100%) |
-| Gate 3 — Functional | 48 live MCP tool calls against COTI testnet | 45/45 (3 intentional skips) |
-| Gate 4 — Integration | 3 end-to-end workflows, 17 steps | 17/17 |
-
-**Verdict: All 4 gates pass. Ship.**
-
-Run tests yourself:
-
-```bash
-cd tests
-# Gate 1 only (no API key needed):
-bash structural-tests.sh
-
-# Full suite (requires ANTHROPIC_API_KEY + COTI credentials):
-bash run-all-tests.sh
-```
-
-Results are written to `tests/results/`. See `tests/results/summary.md` for the full ship/no-ship report.
-
----
-
 ## Known Issues
 
 | # | Issue | Skill | Root Cause | Status |
@@ -475,17 +447,6 @@ coti-skills/
         ├── integration-results.json
         └── summary.md                    ← Final ship/no-ship verdict
 ```
-
----
-
-## Design Principles
-
-- **One skill per domain** — Better trigger accuracy, smaller token footprint per activation
-- **Progressive disclosure** — Frontmatter for triggering, body for execution, `references/` for deep detail
-- **Each skill targets one MCP server** — Clear dependency boundaries, no cross-server confusion
-- **Under 5,000 words per skill** — Optimal Claude context window usage
-- **Kebab-case naming** — Required by Claude Skills specification
-- **Explicit cross-skill dependencies** — Every skill's Prerequisites section names the skills it depends on
 
 ---
 
