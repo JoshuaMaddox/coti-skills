@@ -91,10 +91,10 @@ flowchart TD
         Addr --> QO[get_private_erc721_token_owner\ntoken_address, token_id:int]
         Addr --> QU[get_private_erc721_token_uri\ntoken_address, token_id:int]
         Addr --> QS[get_private_erc721_total_supply\ntoken_address]
-        QB -->|count or FHE note| Q1([balance])
-        QO -->|address or FHE note| Q2([owner])
+        QB -->|count or MPC note| Q1([balance])
+        QO -->|address or MPC note| Q2([owner])
         QU -->|URI string| Q3([metadata URI])
-        QS -->|total or FHE note| Q4([total supply])
+        QS -->|total or MPC note| Q4([total supply])
     end
 
     subgraph Approvals["Approval Management"]
@@ -118,10 +118,10 @@ flowchart TD
 | `deploy_private_erc721_contract` | `name`, `symbol` | `contractAddress` | Deployer becomes owner |
 | `mint_private_erc721_token` | `token_address`, `to_address`, `token_uri` | `transactionHash` | token_id auto-assigned |
 | `transfer_private_erc721` | `token_address`, `to_address`, `token_id` (int) | `transactionHash` | token_id must be integer |
-| `get_private_erc721_balance` | `token_address`, `address` | count | FHE may return encrypted bytes |
-| `get_private_erc721_token_owner` | `token_address`, `token_id` (int) | address | FHE may return encrypted bytes |
+| `get_private_erc721_balance` | `token_address`, `address` | count | MPC layer may return encrypted bytes |
+| `get_private_erc721_token_owner` | `token_address`, `token_id` (int) | address | MPC layer may return encrypted bytes |
 | `get_private_erc721_token_uri` | `token_address`, `token_id` (int) | URI string | Plain string, not encrypted |
-| `get_private_erc721_total_supply` | `token_address` | count | FHE may return encrypted bytes |
+| `get_private_erc721_total_supply` | `token_address` | count | MPC layer may return encrypted bytes |
 | `approve_private_erc721` | `token_address`, `to`, `token_id` (int) | `transactionHash` | Single token approval |
 | `set_private_erc721_approval_for_all` | `token_address`, `operator`, `approved` (bool) | `transactionHash` | Operator approval |
 | `get_private_erc721_approved` | `token_address`, `token_id` (int) | address | — |
@@ -139,7 +139,7 @@ Mints a new NFT to a specified address with a token URI. Token IDs are assigned 
 Transfers an NFT to a new owner. The caller must be the current owner or an approved operator.
 
 ### `get_private_erc721_balance`
-Returns the number of NFTs held by an address. Due to COTI FHE encryption, may return encrypted bytes — this is expected behavior.
+Returns the number of NFTs held by an address. Due to garbled-circuit encryption, may return encrypted bytes — this is expected behavior.
 
 ### `get_private_erc721_token_owner`
 Returns the current owner address of a specific token ID.
@@ -148,7 +148,7 @@ Returns the current owner address of a specific token ID.
 Returns the metadata URI associated with a token (e.g., `"ipfs://Qm..."`). This value is not encrypted.
 
 ### `get_private_erc721_total_supply`
-Returns the total number of minted tokens in the collection. FHE-encrypted on-chain — may return a decode note.
+Returns the total number of minted tokens in the collection. garbled-circuit-encrypted on-chain — may return a decode note.
 
 ### `approve_private_erc721`
 Approves another address to transfer a specific token. Only the token owner can call this.
@@ -167,7 +167,7 @@ Returns a boolean indicating whether an operator is approved for all tokens of a
 - **"not owner or approved"**: The caller is not the token owner and has not been approved to transfer it. Call `approve_private_erc721` or `set_private_erc721_approval_for_all` first.
 - **"token does not exist"**: The token ID has not been minted. Check with `get_private_erc721_total_supply` to see the current count.
 - **"not authorized to mint"**: Only the contract owner (deployer) can mint. Verify you are using the same wallet that deployed the collection.
-- **"could not decode result data"**: Expected behavior for FHE state reads (`balance`, `owner`, `totalSupply`). Values are encrypted on-chain — the tool is working correctly.
+- **"could not decode result data"**: Expected behavior for garbled-circuit encrypted state reads (`balance`, `owner`, `totalSupply`). Values are encrypted on-chain — the tool is working correctly.
 
 ## Examples
 
@@ -199,4 +199,4 @@ Returns a boolean indicating whether an operator is approved for all tokens of a
 - Parameter names use `token_address` (not `contractAddress`) and `to_address` (not `to`) — exact spelling matters for the MCP tool schema.
 - Token URIs typically point to IPFS or other decentralized storage for metadata JSON.
 - Approval patterns follow standard ERC721 conventions — use single-token approval for specific delegations, operator approval for full delegations (e.g., a marketplace).
-- FHE state reads (`balance`, `owner`, `totalSupply`) may return encrypted bytes on the COTI testnet — this is expected, not an error.
+- garbled-circuit encrypted state reads (`balance`, `owner`, `totalSupply`) may return encrypted bytes on the COTI testnet — this is expected, not an error.

@@ -13,7 +13,7 @@ metadata:
 
 ## Overview
 
-This skill handles the full lifecycle of custom Solidity smart contracts on COTI: writing, compiling, deploying, and interacting. COTI extends standard Solidity with **privacy primitives powered by garbled circuits (FHE)**, allowing developers to build confidential smart contracts using familiar tools.
+This skill handles the full lifecycle of custom Solidity smart contracts on COTI: writing, compiling, deploying, and interacting. COTI extends standard Solidity with **privacy primitives powered by garbled circuits**, allowing developers to build confidential smart contracts using familiar tools.
 
 For pre-built token contracts, use the `coti-private-erc20` or `coti-private-nft` skills instead. This skill is for **custom contracts** that need direct Solidity authoring or COTI-specific privacy types (`itUint64`, `itString`, `itBool`).
 
@@ -74,7 +74,7 @@ flowchart TD
 
     CallFn -->|read: return value\nwrite: transactionHash| Out([result])
 
-    subgraph Privacy["FHE Encrypt / Decrypt"]
+    subgraph Privacy["MPC Encrypt / Decrypt"]
         EV[encrypt_value\nvalue] -->|ciphertext| CallFn
         Out -->|encrypted return value| DV[decrypt_value\nencryptedValue]
         DV -->|plaintext| Decrypted([original value])
@@ -123,7 +123,7 @@ abi: [{"name":"retrieve","type":"function",...}]
 Encrypts a plaintext value (number or string) using the configured wallet's AES key. Returns ciphertext suitable for use as an `itUint64` or `itString` argument in a privacy contract.
 
 ### `decrypt_value`
-Decrypts an FHE-encrypted value returned from a privacy contract call. Returns the original plaintext.
+Decrypts a garbled-circuit-encrypted value returned from a privacy contract call. Returns the original plaintext.
 
 ## Privacy Contract Patterns
 
@@ -201,7 +201,7 @@ contract SimpleStorage {
 
 ## Important Notes
 
-- COTI contracts are EVM-compatible with additional FHE privacy primitives (`MpcCore`)
+- COTI contracts are EVM-compatible with additional garbled-circuit privacy primitives (`MpcCore`)
 - `abi` in `call_contract_function` **must be a JSON string** — the coti-mcp Zod schema enforces `string` type
 - Privacy contract view functions may time out on testnet (60–180s) due to MPC network processing — this is expected
 - Always test on testnet before deploying to mainnet

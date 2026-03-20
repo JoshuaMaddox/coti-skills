@@ -115,8 +115,8 @@ flowchart LR
 
 | Skill | MCP Server | Tools | Description |
 |---|---|---|---|
-| [`coti-private-erc20`](#coti-private-erc20) | `coti-mcp` | 8 | Deploy and manage FHE-encrypted ERC20 tokens |
-| [`coti-private-nft`](#coti-private-nft) | `coti-mcp` | 11 | Deploy and manage FHE-encrypted ERC721 NFT collections |
+| [`coti-private-erc20`](#coti-private-erc20) | `coti-mcp` | 8 | Deploy and manage garbled-circuit ERC20 tokens |
+| [`coti-private-nft`](#coti-private-nft) | `coti-mcp` | 11 | Deploy and manage garbled-circuit ERC721 NFT collections |
 
 ### Advanced
 
@@ -206,22 +206,22 @@ Every encrypted cell stored by `send_message` earns usage units. Rewards are dis
 
 ### coti-private-erc20
 
-**Privacy-preserving fungible tokens — FHE-encrypted balances and transfers.**
+**Privacy-preserving fungible tokens — garbled-circuit encrypted balances and transfers.**
 
-Balances are encrypted on-chain (FHE integers, max 6 decimal places). Transfer amounts are confidential. Sender/recipient addresses are public.
+Balances are encrypted on-chain via garbled circuits (max 6 decimal places). Transfer amounts are confidential. Sender/recipient addresses are public.
 
 | Tool | Purpose | Key Output |
 |---|---|---|
 | `deploy_private_erc20_contract` | Deploy new token | `contractAddress` |
 | `mint_private_erc20_token` | Mint to address (owner only) | `transactionHash` |
 | `transfer_private_erc20` | Confidential transfer | `transactionHash` |
-| `get_private_erc20_balance` | Decrypt caller's balance | balance (may return encrypted if FHE) |
+| `get_private_erc20_balance` | Decrypt caller's balance | balance (may return encrypted bytes — garbled circuit state) |
 | `get_private_erc20_total_supply` | Total minted supply | supply |
 | `get_private_erc20_decimals` | Token decimal places (max 6) | decimals |
 | `approve_erc20_spender` | Grant transfer allowance | `transactionHash` |
 | `get_private_erc20_allowance` | Check approved amount | allowance |
 
-**Note:** Due to FHE encryption, `get_private_erc20_balance` and `get_private_erc20_total_supply` may return "could not decode result data" — this is expected on COTI testnet. Values are encrypted on-chain.
+**Note:** Due to garbled-circuit encryption, `get_private_erc20_balance` and `get_private_erc20_total_supply` may return "could not decode result data" — this is expected on COTI testnet. Values are encrypted on-chain.
 
 ---
 
@@ -260,8 +260,8 @@ For pre-built token contracts use `coti-private-erc20` or `coti-private-nft` ins
 | `compile_and_deploy_contract` | Compile + deploy in one step | `contractAddress`, `transactionHash` |
 | `compile_contract` | Compile only (inspect ABI/bytecode) | ABI, bytecode |
 | `call_contract_function` | Call read or write function | return value or `transactionHash` |
-| `encrypt_value` | Encrypt value for FHE contract input | ciphertext |
-| `decrypt_value` | Decrypt value returned from FHE contract | plaintext |
+| `encrypt_value` | Encrypt value for garbled-circuit contract input | ciphertext |
+| `decrypt_value` | Decrypt value returned from garbled-circuit contract | plaintext |
 
 **Key parameter:** `abi` in `call_contract_function` must be a **JSON string** (not an array). Use `JSON.stringify(abi)`.
 
@@ -429,7 +429,7 @@ Results are written to `tests/results/`. See `tests/results/summary.md` for the 
 | # | Issue | Skill | Root Cause | Status |
 |---|---|---|---|---|
 | I1 | `send_message` transactions revert on-chain | `coti-private-messaging` | COTI SDK: `sendMessage()` passes `undefined` as 3rd positional arg to ethers v6, breaking ABI lookup | Upstream SDK bug — tracked |
-| I2 | `totalSupply`/`balanceOf`/`ownerOf` return "could not decode" | `coti-private-erc20`, `coti-private-nft` | COTI FHE encrypts state; raw decode without MPC interaction fails | Expected — FHE design |
+| I2 | `totalSupply`/`balanceOf`/`ownerOf` return "could not decode" | `coti-private-erc20`, `coti-private-nft` | COTI garbled circuits encrypt state; raw decode without MPC interaction fails | Expected — garbled circuit design |
 | I3 | `request_starter_grant` errors without config | `coti-starter-grant` | `STARTER_GRANT_SERVICE_URL` must be set by service operator | Config — not a bug |
 | I4 | MPC operations take 60–300s on testnet | All privacy skills | COTI testnet MPC network processing latency | Expected — testnet behaviour |
 | I5 | `call_contract_function` ABI must be a JSON string | `coti-smart-contracts` | coti-mcp Zod schema expects `string`, not array | Document as API contract |

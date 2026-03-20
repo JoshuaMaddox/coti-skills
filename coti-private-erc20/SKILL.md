@@ -13,10 +13,10 @@ metadata:
 
 ## Overview
 
-This skill deploys and manages privacy-preserving ERC20 tokens on the COTI network. Unlike standard ERC20 tokens, COTI private tokens **encrypt balances and transfer amounts** using garbled circuits (FHE), so token holdings and transaction values remain confidential on-chain while remaining fully EVM-compatible.
+This skill deploys and manages privacy-preserving ERC20 tokens on the COTI network. Unlike standard ERC20 tokens, COTI private tokens **encrypt balances and transfer amounts** using garbled circuits, so token holdings and transaction values remain confidential on-chain while remaining fully EVM-compatible.
 
 Key constraints:
-- **Maximum 6 decimal places** (COTI FHE integers support up to 6 decimal places, not 18)
+- **Maximum 6 decimal places** (COTI garbled-circuit integers support up to 6 decimal places, not 18)
 - Balances are encrypted — raw `balanceOf()` calls return encrypted bytes, not a readable number
 - Transfer amounts are confidential — on-chain observers see a transfer occurred but not the amount
 
@@ -86,8 +86,8 @@ flowchart TD
         Addr --> BAL[get_private_erc20_balance\ntoken_address, account_address]
         Addr --> SUP[get_private_erc20_total_supply\ntoken_address]
         Addr --> DEC[get_private_erc20_decimals\ntoken_address]
-        BAL -->|balance or FHE decode note| BalOut([balance])
-        SUP -->|supply or FHE decode note| SupOut([total supply])
+        BAL -->|balance or MPC decode note| BalOut([balance])
+        SUP -->|supply or MPC decode note| SupOut([total supply])
         DEC -->|decimals 0-6| DecOut([precision])
     end
 
@@ -112,8 +112,8 @@ flowchart TD
 | `deploy_private_erc20_contract` | `name`, `symbol`, `decimals` | `contractAddress` | Decimals max 6 |
 | `mint_private_erc20_token` | `token_address`, `recipient_address`, `amount_wei` | `transactionHash` | Owner only |
 | `transfer_private_erc20` | `token_address`, `recipient_address`, `amount_wei` | `transactionHash` | Amount encrypted on-chain |
-| `get_private_erc20_balance` | `token_address`, `account_address` | balance or FHE note | May return encrypted bytes on raw call |
-| `get_private_erc20_total_supply` | `token_address` | supply | May return FHE decode note |
+| `get_private_erc20_balance` | `token_address`, `account_address` | balance or MPC note | May return encrypted bytes on raw call |
+| `get_private_erc20_total_supply` | `token_address` | supply | May return MPC decode note |
 | `get_private_erc20_decimals` | `token_address` | integer 0–6 | Use to interpret amounts |
 | `approve_erc20_spender` | `token_address`, `spender_address`, `amount_wei` | `transactionHash` | — |
 | `get_private_erc20_allowance` | `token_address`, `owner_address`, `spender_address` | allowance | Rich text response |
@@ -130,10 +130,10 @@ Mints new tokens to a specified address. Only the contract owner (deployer) can 
 Transfers tokens between addresses. The transfer amount is encrypted on-chain — only the sender and recipient can read it through the privacy layer.
 
 ### `get_private_erc20_balance`
-Returns the token balance for an account, decrypted via the privacy layer. Due to COTI FHE encryption, this may return a "could not decode result data" message on raw calls — this is expected behavior, not an error.
+Returns the token balance for an account, decrypted via the privacy layer. Due to garbled-circuit encryption, this may return a "could not decode result data" message on raw calls — this is expected behavior, not an error.
 
 ### `get_private_erc20_total_supply`
-Returns the total minted supply of the token. FHE-encrypted on-chain — may return a decode note.
+Returns the total minted supply of the token. Encrypted on-chain via garbled circuits — may return a decode note.
 
 ### `get_private_erc20_decimals`
 Returns the decimal precision of the token (0–6). Always use this before performing arithmetic on token amounts.
@@ -150,8 +150,8 @@ Returns the remaining allowance a spender has for a given owner.
 - **"insufficient balance"**: The sender does not have enough tokens. Check balance before transferring.
 - **"insufficient allowance"**: The spender was not approved for the requested amount. Call `approve_erc20_spender` first.
 - **"contract not found"**: The contract address is invalid or deployed on a different network (testnet vs mainnet).
-- **"decimals must be ≤ 6"**: COTI FHE integers support a maximum of 6 decimal places. Do not use 18.
-- **"could not decode result data"**: Expected behavior for FHE state reads (`totalSupply`, `balanceOf`). Values are encrypted on-chain — the tool is working correctly.
+- **"decimals must be ≤ 6"**: COTI garbled-circuit integers support a maximum of 6 decimal places. Do not use 18.
+- **"could not decode result data"**: Expected behavior for garbled-circuit encrypted state reads (`totalSupply`, `balanceOf`). Values are encrypted on-chain — the tool is working correctly.
 
 ## Examples
 
@@ -175,7 +175,7 @@ Returns the remaining allowance a spender has for a given owner.
 
 ## Important Notes
 
-- **Decimals max 6** — do not use 18. COTI's FHE integers have a precision limit.
+- **Decimals max 6** — do not use 18. COTI's garbled-circuit integers have a precision limit.
 - Balances are encrypted on-chain — only the account holder can view their balance through the privacy layer
 - Transfer amounts are confidential but sender/recipient addresses are visible
 - The token is fully EVM-compatible for non-privacy operations (standard tooling works)

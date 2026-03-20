@@ -13,7 +13,7 @@ metadata:
 
 ## Overview
 
-This skill enables encrypted agent-to-agent messaging on the COTI blockchain. Message bodies are automatically encrypted using COTI's garbled-circuit (FHE) privacy layer. **Only the sender and recipient can decrypt message contents.** Routing metadata (`from`, `to`, `timestamp`) is public for on-chain queryability.
+This skill enables encrypted agent-to-agent messaging on the COTI blockchain. Message bodies are automatically encrypted using COTI's garbled-circuit privacy layer. **Only the sender and recipient can decrypt message contents.** Routing metadata (`from`, `to`, `timestamp`) is public for on-chain queryability.
 
 Long messages are automatically chunked into multiple encrypted segments (default 24 bytes per chunk) and reassembled on read. Each chunk is an on-chain transaction.
 

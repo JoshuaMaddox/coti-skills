@@ -1,6 +1,6 @@
 ============================================================
 COTI Skills — Gate 1: Structural Compliance
-Timestamp: 2026-03-19T18:30:54Z
+Timestamp: 2026-03-20T02:01:33Z
 Skills dir: /Users/joshuamaddox/Documents/code/COTI/COTI Agents Skills Reseasrch/coti-skills
 ============================================================
 
@@ -28,7 +28,7 @@ Skill: coti-account-setup
   ✅ PASS  S8: [coti-account-setup] Description has no XML angle brackets
   ✅ PASS  S9: [coti-account-setup] Description contains 'Use when' trigger pattern
   ✅ PASS  S10: [coti-account-setup] name does not use reserved prefix
-  ✅ PASS  S11: [coti-account-setup] Body word count (733) is under 5,000
+  ✅ PASS  S11: [coti-account-setup] Body word count (732) is under 5,000
   ✅ PASS  S12: [coti-account-setup] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
   ✅ PASS  S13: [coti-account-setup] metadata.mcp-server field present
 
@@ -62,7 +62,7 @@ Skill: coti-private-messaging
   ✅ PASS  S8: [coti-private-messaging] Description has no XML angle brackets
   ✅ PASS  S9: [coti-private-messaging] Description contains 'Use when' trigger pattern
   ✅ PASS  S10: [coti-private-messaging] name does not use reserved prefix
-  ✅ PASS  S11: [coti-private-messaging] Body word count (914) is under 5,000
+  ✅ PASS  S11: [coti-private-messaging] Body word count (913) is under 5,000
   ✅ PASS  S12: [coti-private-messaging] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
   ✅ PASS  S13: [coti-private-messaging] metadata.mcp-server field present
 
@@ -96,7 +96,7 @@ Skill: coti-private-erc20
   ✅ PASS  S8: [coti-private-erc20] Description has no XML angle brackets
   ✅ PASS  S9: [coti-private-erc20] Description contains 'Use when' trigger pattern
   ✅ PASS  S10: [coti-private-erc20] name does not use reserved prefix
-  ✅ PASS  S11: [coti-private-erc20] Body word count (1028) is under 5,000
+  ✅ PASS  S11: [coti-private-erc20] Body word count (1030) is under 5,000
   ✅ PASS  S12: [coti-private-erc20] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
   ✅ PASS  S13: [coti-private-erc20] metadata.mcp-server field present
 
@@ -113,7 +113,7 @@ Skill: coti-private-nft
   ✅ PASS  S8: [coti-private-nft] Description has no XML angle brackets
   ✅ PASS  S9: [coti-private-nft] Description contains 'Use when' trigger pattern
   ✅ PASS  S10: [coti-private-nft] name does not use reserved prefix
-  ✅ PASS  S11: [coti-private-nft] Body word count (1087) is under 5,000
+  ✅ PASS  S11: [coti-private-nft] Body word count (1091) is under 5,000
   ✅ PASS  S12: [coti-private-nft] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
   ✅ PASS  S13: [coti-private-nft] metadata.mcp-server field present
 
@@ -130,7 +130,7 @@ Skill: coti-smart-contracts
   ✅ PASS  S8: [coti-smart-contracts] Description has no XML angle brackets
   ✅ PASS  S9: [coti-smart-contracts] Description contains 'Use when' trigger pattern
   ✅ PASS  S10: [coti-smart-contracts] name does not use reserved prefix
-  ✅ PASS  S11: [coti-smart-contracts] Body word count (1031) is under 5,000
+  ✅ PASS  S11: [coti-smart-contracts] Body word count (1030) is under 5,000
   ✅ PASS  S12: [coti-smart-contracts] All required sections present (Overview, Prerequisites, Workflow, Error Handling, Examples)
   ✅ PASS  S13: [coti-smart-contracts] metadata.mcp-server field present
 

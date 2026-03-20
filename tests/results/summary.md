@@ -90,8 +90,8 @@ Full output: `tests/results/trigger-results.json`
 **I1 — COTI SDK messaging bug (upstream):**
 `send_message` calls `sendMessage(to, chunk, undefined)` where ethers v6 treats explicit `undefined` as a positional argument, causing ABI fragment lookup to fail. Transaction reverts on-chain. Workaround (`gasLimit` override) submits but reverts. Tracked as COTI SDK upstream issue. F13, F14, F17 (read/metadata tests that depend on a valid sent messageId) are intentionally skipped.
 
-**I2 — FHE privacy state reads (COTI protocol design):**
-Privacy contracts encrypt state on-chain. `totalSupply()`, `balanceOf()`, `ownerOf()` return empty bytes (`0x`) because values are encrypted. "Could not decode result data" is expected behavior for FHE contracts, not a bug.
+**I2 — Garbled-circuit encrypted state reads (COTI protocol design):**
+Privacy contracts encrypt state on-chain. `totalSupply()`, `balanceOf()`, `ownerOf()` return empty bytes (`0x`) because values are encrypted. "Could not decode result data" is expected behavior for privacy contracts, not a bug.
 
 **I3 — Starter grant service URL not configured in test env:**
 `STARTER_GRANT_SERVICE_URL` env var must be set by the service operator. The tool correctly returns a descriptive error when not configured.
@@ -158,4 +158,4 @@ Full output: `tests/results/integration-results.json`
 └──────────────────────────────────────────────────┘
 ```
 
-All 8 COTI skills are validated and ready to ship. The two upstream issues (COTI SDK messaging ABI bug, FHE encrypted state reads) are documented in each affected skill's Error Handling section and do not block the overall functionality of the skill suite.
+All 8 COTI skills are validated and ready to ship. The two upstream issues (COTI SDK messaging ABI bug, garbled-circuit encrypted state reads) are documented in each affected skill's Error Handling section and do not block the overall functionality of the skill suite.

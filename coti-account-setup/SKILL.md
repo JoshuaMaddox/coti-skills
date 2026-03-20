@@ -17,7 +17,7 @@ This skill handles wallet account creation and configuration on the COTI privacy
 
 COTI accounts require two credentials:
 - A **private key** — standard Ethereum-compatible key for signing transactions
-- An **AES key** — encryption key for COTI's garbled-circuit (FHE) privacy operations
+- An **AES key** — encryption key for COTI's garbled-circuit privacy operations
 
 Both are required for full COTI functionality.
 
@@ -138,7 +138,7 @@ Returns the current RPC endpoint URL. Useful for verifying network switches and 
 ## Important Notes
 
 - **Store both keys securely.** Never log or expose them.
-- The AES key and private key are separate. Both are required for COTI FHE privacy features.
+- The AES key and private key are separate. Both are required for COTI garbled-circuit privacy features.
 - Testnet is recommended for development. Switch to mainnet only for production.
 - After account setup, the wallet is ready for all other COTI skills: messaging, tokens, NFTs, contracts, and transactions.
 - `generate_aes_key` binds the AES key to the wallet address on-chain on COTI testnet — it is not a purely local operation.
