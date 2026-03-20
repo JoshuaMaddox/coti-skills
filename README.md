@@ -348,6 +348,54 @@ Your computer
 
 ---
 
+### ⚡ Shortcut — Let Claude Code do the entire setup for you
+
+If you are comfortable using a terminal, you can skip all the manual steps below. **Claude Code** is a free command-line tool made by Anthropic that runs Claude inside your terminal. Give it the setup prompt from this repo and it will install everything, create your wallet, and get you running — automatically.
+
+#### 1. Install Claude Code
+
+Open **Terminal** (Mac) or **Command Prompt** (Windows) and run:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+> You need Node.js installed first (see Step 1 below if you haven't done that yet).
+
+After installing, log in:
+```bash
+claude login
+```
+
+Follow the link it prints — it opens a browser page where you approve access with your Anthropic account.
+
+#### 2. Clone this repository
+
+```bash
+git clone https://github.com/JoshuaMaddox/coti-skills.git
+cd coti-skills
+```
+
+#### 3. Run the setup prompt
+
+```bash
+claude < setup/setup-prompt.md
+```
+
+That's it. Claude Code will work through all 16 steps automatically:
+- Install both MCP servers
+- Create your COTI wallet and AES key
+- Fill in your `.env` file
+- Claim your starter COTI grant
+- Copy all 8 skills into place
+- Print a summary when it's done
+
+You can also view the full prompt before running it: [`setup/setup-prompt.md`](setup/setup-prompt.md)
+
+> **Prefer to do it manually?** Continue with Step 1 below.
+
+---
+
 ### Step 1 — Install Node.js (the engine that runs the servers)
 
 Node.js is a free program that lets your computer run the MCP servers. You only need to install it once.
