@@ -336,7 +336,7 @@ This section walks you through everything — start to finish — so you can use
 
 ### What you're setting up
 
-Think of it like this: Claude is a very smart assistant, but it needs a **phone line** to talk to the COTI blockchain. That phone line is called an **MCP server**. You need to install two of them on your computer, then tell Claude where they are. Once that's done, you load the skills and Claude knows exactly what to do.
+Think of it like this: your AI agent is a very smart assistant, but it needs a **phone line** to talk to the COTI blockchain. That phone line is called an **MCP server**. You need to install two of them on your computer, then tell your agent where they are. Once that's done, you load the skills and the agent knows exactly what to do.
 
 Here's the full picture:
 
@@ -427,7 +427,7 @@ npm install
 
 **4b. Create the stdio wrapper file:**
 
-The coti-mcp server needs a small connector file to work with Claude. Create a file called `run-stdio.ts` inside the `coti-mcp` folder with this exact content:
+The coti-mcp server needs a small connector file to work with any MCP client. Create a file called `run-stdio.ts` inside the `coti-mcp` folder with this exact content:
 
 ```typescript
 #!/usr/bin/env node
@@ -439,13 +439,13 @@ const transport = new StdioServerTransport();
 await server.connect(transport);
 ```
 
-> This file acts as a bridge so Claude can talk to the server. You only create it once.
+> This file acts as a bridge so your agent can talk to the server over stdio. You only create it once.
 
 ---
 
-### Step 5 — Connect the servers to Claude
+### Step 5 — Connect the servers to your agent
 
-How you connect the servers depends on which Claude product you use.
+How you connect the servers depends on which agent product you use.
 
 #### If you use Claude Desktop (the app on your computer)
 
@@ -478,9 +478,9 @@ Claude.ai does not currently support MCP servers directly. Use the Claude Deskto
 
 ---
 
-### Step 6 — Load the skills into Claude
+### Step 6 — Load the skills into your agent
 
-The skills are the instruction folders in this repository. You need to tell Claude about them.
+The skills are the instruction folders in this repository. You need to tell your agent about them.
 
 #### In Claude Desktop:
 1. Go to **Settings → Capabilities → Skills**
@@ -500,14 +500,14 @@ The skills are the instruction folders in this repository. You need to tell Clau
 
 Now you're ready to create a blockchain wallet. A wallet is just a pair of keys — like a username and password — that proves you own your account on the blockchain.
 
-1. Open a new chat with Claude (make sure the MCP servers are connected — you'll see a plug icon or server indicator)
+1. Open a new chat with your agent (make sure the MCP servers are connected — you'll see a tools/server indicator)
 2. Type: **"Create a new COTI wallet on testnet"**
-3. Claude will call the `create_account` tool and give you back:
+3. The agent will call the `create_account` tool and give you back:
    - An **address** — like `0x6552...` — this is your public username on the blockchain
    - A **private key** — like `0x00a4...` — this is your secret password. **Save it somewhere safe. Never share it.**
 
 4. Then type: **"Generate an AES key for my wallet"**
-5. Claude will give you an **AES key** — a string of letters and numbers. Save this too.
+5. The agent will give you an **AES key** — a string of letters and numbers. Save this too.
 
 **Now go back to your `.env` file** inside `coti-agent-messaging` and fill in the real values:
 ```
@@ -522,8 +522,8 @@ Then restart the `coti-agent-messaging` server (stop it if it's running and star
 
 Your new wallet has zero tokens and can't do anything yet. You need a tiny amount of COTI to pay for transactions (called "gas"). The starter grant gives you some for free.
 
-1. In Claude, type: **"Claim my COTI starter grant"**
-2. Claude will handle the whole process and tell you when it's done
+1. In your agent chat, type: **"Claim my COTI starter grant"**
+2. The agent will handle the whole process and tell you when it's done
 3. Then type: **"Check my COTI balance"** to confirm you received some
 
 > If the starter grant isn't available (requires a running backend service), you can get testnet COTI from the COTI Discord faucet at **https://discord.com/invite/Z4r8D6ez49**
@@ -549,9 +549,9 @@ Once your balance is above zero you can use any of the skills. Try these to get 
 | 3 | Clone and build `coti-agent-messaging` | ☐ |
 | 4 | Create `.env` file inside `coti-agent-messaging` | ☐ |
 | 5 | Clone `coti-mcp` and create `run-stdio.ts` | ☐ |
-| 6 | Add both servers to Claude's config | ☐ |
-| 7 | Load skill folders into Claude | ☐ |
-| 8 | Ask Claude to create your wallet — save your keys | ☐ |
+| 6 | Add both servers to your agent's MCP config | ☐ |
+| 7 | Load skill folders into your agent | ☐ |
+| 8 | Ask your agent to create your wallet — save your keys | ☐ |
 | 9 | Update `.env` with your real keys, restart the server | ☐ |
 | 10 | Claim your starter grant or get testnet COTI from Discord | ☐ |
 | 11 | Check your balance — if it's above zero, you're all set | ☐ |
@@ -561,7 +561,7 @@ Once your balance is above zero you can use any of the skills. Try these to get 
 ### Common problems
 
 **"MCP server not connected"**
-The server isn't running. Make sure the file paths in your Claude config are correct (full absolute paths, no shortcuts like `~`).
+The server isn't running. Make sure the file paths in your agent's MCP config are correct (full absolute paths, no shortcuts like `~`).
 
 **"AES key not configured"**
 Your `.env` file is missing the `AES_KEY` value. Go back to Step 7 and fill it in.
@@ -572,8 +572,8 @@ Your wallet balance is zero. Complete Step 8 to get your starter tokens.
 **"Could not decode result data"**
 This is normal for some token balance checks on COTI. The data is encrypted on-chain — it doesn't mean something is broken.
 
-**Server starts but Claude can't see the tools**
-Restart Claude completely after editing the config file.
+**Server starts but the agent can't see the tools**
+Restart your agent completely after editing the config file.
 
 ---
 
