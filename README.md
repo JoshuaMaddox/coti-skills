@@ -1,8 +1,8 @@
-# COTI Skills Library for Claude
+# COTI Agent Skills Library
 
-> **8 Claude Skills · 48+ MCP tools · 2 MCP servers · COTI privacy blockchain**
+> **8 Agent Skills · 48+ MCP tools · 2 MCP servers · COTI privacy blockchain**
 
-A complete, production-tested library of Claude Skills for interacting with the COTI privacy-preserving blockchain. Covers the full agent lifecycle: wallet creation, initial funding, encrypted messaging, token and NFT deployment, custom smart contracts, and transaction debugging.
+A complete, production-tested library of agent skills for interacting with the COTI privacy-preserving blockchain. Covers the full agent lifecycle: wallet creation, initial funding, encrypted messaging, token and NFT deployment, custom smart contracts, and transaction debugging.
 
 **New here? Start with the [Complete Setup Checklist for Non-Coders →](#complete-setup-checklist-for-non-coders)**
 
@@ -10,9 +10,11 @@ A complete, production-tested library of Claude Skills for interacting with the 
 
 ## What This Is
 
-**For humans:** A plug-and-play skill library that gives Claude the ability to work with the COTI blockchain. Load the skills you need, and Claude will automatically know which tools to call, in what order, and how to handle errors.
+**For humans:** A plug-and-play skill library that gives any compatible AI agent the ability to work with the COTI blockchain. Load the skills you need, and the agent will automatically know which tools to call, in what order, and how to handle errors.
 
 **For agents:** A set of 8 tightly-scoped instruction packages that map natural-language intent to specific MCP tool sequences. Each skill declares its trigger conditions in its `description` field, defines its complete tool workflow in the body, and documents every error state and cross-skill dependency.
+
+> **Framework-agnostic:** Skills are plain SKILL.md files following the open SKILL architecture. Any agent framework that supports SKILL.md loading — Claude Desktop, custom LLM agents, or your own orchestration layer — can use these skills as-is. The MCP servers are standard JSON-RPC 2.0 stdio servers compatible with any MCP client. The setup guides in this README use Claude Desktop as the reference implementation.
 
 ---
 
@@ -328,7 +330,7 @@ sequenceDiagram
 
 ## Complete Setup Checklist for Non-Coders
 
-This section walks you through everything — start to finish — so you can use these skills with Claude. No coding experience needed. Just follow each step in order.
+This section walks you through everything — start to finish — so you can use these skills with a compatible AI agent. The steps below use **Claude Desktop** as the reference implementation, but the MCP servers and skill files work with any agent that supports the SKILL architecture. No coding experience needed. Just follow each step in order.
 
 ---
 
@@ -342,57 +344,9 @@ Here's the full picture:
 Your computer
 ├── coti-mcp server          ← handles wallets, tokens, contracts
 ├── coti-agent-messaging     ← handles messages and rewards
-└── Claude (desktop app)
-    └── Skills loaded        ← these files tell Claude how to use the servers
+└── Your AI agent (e.g. Claude Desktop)
+    └── Skills loaded        ← these files tell the agent how to use the servers
 ```
-
----
-
-### ⚡ Shortcut — Let Claude Code do the entire setup for you
-
-If you are comfortable using a terminal, you can skip all the manual steps below. **Claude Code** is a free command-line tool made by Anthropic that runs Claude inside your terminal. Give it the setup prompt from this repo and it will install everything, create your wallet, and get you running — automatically.
-
-#### 1. Install Claude Code
-
-Open **Terminal** (Mac) or **Command Prompt** (Windows) and run:
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-> You need Node.js installed first (see Step 1 below if you haven't done that yet).
-
-After installing, log in:
-```bash
-claude login
-```
-
-Follow the link it prints — it opens a browser page where you approve access with your Anthropic account.
-
-#### 2. Clone this repository
-
-```bash
-git clone https://github.com/JoshuaMaddox/coti-skills.git
-cd coti-skills
-```
-
-#### 3. Run the setup prompt
-
-```bash
-claude < setup/setup-prompt.md
-```
-
-That's it. Claude Code will work through all 16 steps automatically:
-- Install both MCP servers
-- Create your COTI wallet and AES key
-- Fill in your `.env` file
-- Claim your starter COTI grant
-- Copy all 8 skills into place
-- Print a summary when it's done
-
-You can also view the full prompt before running it: [`setup/setup-prompt.md`](setup/setup-prompt.md)
-
-> **Prefer to do it manually?** Continue with Step 1 below.
 
 ---
 
@@ -522,14 +476,6 @@ How you connect the servers depends on which Claude product you use.
 
 Claude.ai does not currently support MCP servers directly. Use the Claude Desktop app instead.
 
-#### If you use Claude Code (in a terminal)
-
-Run this in your project folder to register the servers:
-```bash
-claude mcp add coti-mcp -- npx tsx /full/path/to/coti-mcp/run-stdio.ts
-claude mcp add coti-agent-messaging -- node /full/path/to/coti-agent-messaging/dist/mcp-server.js
-```
-
 ---
 
 ### Step 6 — Load the skills into Claude
@@ -547,15 +493,6 @@ The skills are the instruction folders in this repository. You need to tell Clau
 - `coti-starter-grant` — to get your first COTI tokens
 - `coti-private-messaging` — to send encrypted messages
 - `coti-transaction-tools` — to check balances and transactions
-
-#### In Claude Code:
-Copy the skill folders to Claude's skills directory:
-```bash
-cp -r coti-account-setup ~/.claude/skills/
-cp -r coti-starter-grant ~/.claude/skills/
-cp -r coti-private-messaging ~/.claude/skills/
-cp -r coti-transaction-tools ~/.claude/skills/
-```
 
 ---
 
@@ -642,21 +579,12 @@ Restart Claude completely after editing the config file.
 
 ## Installation
 
-### Claude.ai
+### Claude Desktop / Skills-compatible clients
 
 1. Clone or download this repository
-2. Go to **Settings → Capabilities → Skills**
+2. Go to **Settings → Capabilities → Skills** (or your agent's equivalent skill-loading UI)
 3. Click **Add skill folder** and select any of the 8 skill directories
 4. Repeat for each skill you want to enable
-
-### Claude Code
-
-```bash
-# Copy skill folders to Claude Code's skills directory
-cp -r coti-account-setup ~/.claude/skills/
-cp -r coti-starter-grant ~/.claude/skills/
-# etc.
-```
 
 Skills auto-trigger based on user queries matching their `description` field.
 
